@@ -1,5 +1,10 @@
 const std = @import("std");
-const SpecTest = @import("test/spec.zig");
+// Vendor patch — the upstream YAML Test Suite harness (test/spec.zig) uses
+// std APIs removed in Zig 0.16 (std.StringArrayHashMap, std.fs.cwd reshape).
+// Because build.zig imported it at top level and referenced SpecTest.create in
+// an analyzed branch, the broken harness failed every consumer's build. We only
+// consume the `yaml` module, so the conformance step is dropped here. See
+// vendor/zig-yaml/CHANGES.md.
 
 pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
@@ -56,18 +61,5 @@ pub fn build(b: *std.Build) void {
     e2e_tests.root_module.addImport("yaml", yaml_module);
     test_step.dependOn(&b.addRunArtifact(e2e_tests).step);
 
-    const enable_spec_tests = b.option(bool, "enable-spec-tests", "Enable YAML Test Suite") orelse false;
-    if (enable_spec_tests) {
-        const gen = SpecTest.create(b);
-        const spec_tests_module = b.addModule("spec", .{
-            .root_source_file = gen.path(),
-            .target = target,
-            .optimize = optimize,
-        });
-        var spec_tests = b.addTest(.{
-            .root_module = spec_tests_module,
-        });
-        spec_tests.root_module.addImport("yaml", yaml_module);
-        test_step.dependOn(&b.addRunArtifact(spec_tests).step);
-    }
+    // Vendor patch — YAML Test Suite conformance step dropped (see top of file).
 }
