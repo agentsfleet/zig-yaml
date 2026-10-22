@@ -1,3 +1,11 @@
+> [!CAUTION]
+> **This fork is sunset and archived.**
+> [`agentsfleet`](https://github.com/agentsfleet/agentsfleet) has moved to Rust,
+> so this Zig dependency fork is no longer used or maintained. See
+> [github.com/agentsfleet/agentsfleet](https://github.com/agentsfleet/agentsfleet)
+> for current work, or [kubkon/zig-yaml](https://github.com/kubkon/zig-yaml)
+> for the upstream project.
+
 # zig-yaml
 
 YAML parser for Zig
